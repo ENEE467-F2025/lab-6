@@ -77,7 +77,8 @@ RUN apt-get update && apt-get install -y \
     ros-jazzy-aruco-markers-msgs* \
     ros-jazzy-cv-bridge \
     ros-jazzy-realsense2* \
-    ros-jazzy-aruco-opencv*
+    ros-jazzy-aruco-opencv* \
+    ros-jazzy-rqt-image-view
 
 RUN apt-get update \
     && apt-get install -y ros-jazzy-gz-*
