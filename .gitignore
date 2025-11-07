@@ -1,0 +1,16 @@
+**src/lab_opencv
+**src/lab_visual_servoing
+**src/lab_yolo
+**src/lab_aruco_pose
+
+**.vscode
+
+**.db
+**.log
+**log/
+**build/
+**install/
+
+**/slides
+
+**/docs

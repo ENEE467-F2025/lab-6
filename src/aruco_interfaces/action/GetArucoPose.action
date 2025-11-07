@@ -1,0 +1,8 @@
+# Request
+int32 marker_id
+---
+# Result
+geometry_msgs/PoseStamped aruco_pose
+---
+# Feedback
+bool marker_found
