@@ -58,5 +58,5 @@ gripper_action_controller:
         - position
         - velocity
       interface_name: position
-      goal_tolerance: 0.01
+      goal_tolerance: 0.00
       allow_partial_joints_goal: false
