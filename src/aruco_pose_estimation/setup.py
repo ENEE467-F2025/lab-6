@@ -26,6 +26,7 @@ setup(
         'console_scripts': [
             'detect_aruco = aruco_pose_estimation.detect_aruco:main',
             'estimate_aruco_pose = aruco_pose_estimation.estimate_aruco_pose:main',
+            'aruco_pose_visualizer = aruco_pose_estimation.aruco_pose_visualizer:main',
         ],
     },
 )

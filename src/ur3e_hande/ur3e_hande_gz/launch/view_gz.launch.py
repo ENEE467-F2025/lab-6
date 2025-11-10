@@ -51,6 +51,9 @@ def generate_launch_description() -> LaunchDescription:
 
     # Nodes
     aruco_marker_id = LaunchConfiguration("aruco_marker_id")
+    use_aruco = LaunchConfiguration("use_aruco")
+    aruco_rviz_config = LaunchConfiguration("aruco_rviz_config")
+    move_to_aruco = LaunchConfiguration("move_to_aruco")
 
     # add gz-specific models folder
     gz_models_path = os.path.join(gazebo_pkg_share, "models")
@@ -122,18 +125,32 @@ def generate_launch_description() -> LaunchDescription:
                 {"publish_frequency": 50.0, "frame_prefix": "", "use_sim_time": use_sim_time},
             ],
         ),
-        # rviz2
+        # Normal RViz
         Node(
             package="rviz2",
-            condition=IfCondition(launch_rviz),
             executable="rviz2",
+            condition=IfCondition(
+                PythonExpression(["'", launch_rviz, "' == 'true' and not ('", use_aruco, "' == 'true')"])
+            ),
             output="log",
             arguments=[
-                "--display-config",
-                rviz_config,
-                "--ros-args",
-                "--log-level",
-                log_level,
+                "--display-config", rviz_config,
+                "--ros-args", "--log-level", log_level,
+            ],
+            parameters=[{"use_sim_time": use_sim_time}],
+        ),
+
+        # ArUco RViz
+        Node(
+            package="rviz2",
+            executable="rviz2",
+            condition=IfCondition(
+                PythonExpression(["'", launch_rviz, "' == 'true' and '", use_aruco, "' == 'true'"])
+            ),
+            output="log",
+            arguments=[
+                "--display-config", aruco_rviz_config,
+                "--ros-args", "--log-level", log_level,
             ],
             parameters=[{"use_sim_time": use_sim_time}],
         ),
@@ -233,24 +250,16 @@ def generate_launch_description() -> LaunchDescription:
         ),
 
         # ArUco detection
-        # Node(
-        #     package="aruco_pose_estimation",
-        #     executable="detect_aruco.py",
-        #     parameters=[{
-        #         "aruco_marker_id": aruco_marker_id,
-        #         "use_sim_time": use_sim_time,
-        #     }],
-        #     output="screen",
-        # ),
-
-        # Custom marker-to-arm motion node
-        # Node(
-        #     package="aruco_pose_estimation",
-        #     condition=IfCondition(LaunchConfiguration("move_to_aruco")),
-        #     parameters=[{"use_sim_time": use_sim_time}],
-        #     executable="move_to_aruco.py",
-        #     output="screen",
-        # )
+        Node(
+            package="aruco_pose_estimation",
+            executable="detect_aruco",
+            parameters=[{
+                "aruco_marker_id": aruco_marker_id,
+                "use_sim_time": use_sim_time,
+            }],
+            condition=IfCondition(use_aruco),
+            output="screen",
+        )
     ]
 
     return LaunchDescription(declared_arguments + launch_descriptions + nodes)
@@ -325,6 +334,15 @@ def generate_declared_arguments() -> List[DeclareLaunchArgument]:
             description="Path to configuration for RViz2.",
         ),
         DeclareLaunchArgument(
+            "aruco_rviz_config",
+            default_value=path.join(
+                get_package_share_directory("ur3e_hande_description"),
+                "rviz",
+                "view_robot_tfs_no_pc_aruco_pose.rviz",
+            ),
+            description="Path to configuration for RViz2 for ArUco detection."
+        ),
+        DeclareLaunchArgument(
             "bridge_name", 
             default_value="ur3e_hande_gz_bridge",
             description="YAML config file"
@@ -347,6 +365,11 @@ def generate_declared_arguments() -> List[DeclareLaunchArgument]:
             "aruco_marker_id",
             default_value="80",
             description="ID of the ArUco marker to detect."
+        ),
+        DeclareLaunchArgument(
+            "use_aruco",
+            default_value="false",
+            description="Whether to use ArUco markers."
         ),
         DeclareLaunchArgument(
             "move_to_aruco",

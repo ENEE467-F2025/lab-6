@@ -22,10 +22,10 @@
     </link>
 
   <!-- Dummy camera link to reorient sensor frames correctly -->
-  <link name="dummy_camera_link"/>
+  <link name="camera_optical_link"/>
   <joint name="dummy_camera_joint" type="fixed">
     <parent link="camera_link"/>
-    <child link="dummy_camera_link"/>
+    <child link="camera_optical_link"/>
     <origin xyz="0 0 0" rpy="-3.14 -1.57 1.57"/> <!-- only cloud is off; previously: ${-pi/2} 0 ${-pi/2}--> 
   </joint>
 

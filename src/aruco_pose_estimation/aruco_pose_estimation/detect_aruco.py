@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Lab 6: Visual Robot Perception with ROS 2
+# Lab 6: Visual Robot Perception in ROS 2
 # Copyright (C) 2025 Clinton Enwerem
 
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,8 +33,17 @@ class ArucoCubeDetector(Node):
         self.marker_id = self.get_parameter("aruco_marker_id").get_parameter_value().integer_value
         self.bridge = CvBridge()
         self.sub = self.create_subscription(Image, '/rgbd_camera/image', self.image_cb, 10)
-        self.aruco_img_pub = self.create_publisher(Image, '/aruco_cube_image', 10)
-        self.aruco_marker_pub = self.create_publisher(Marker, '/aruco_cube_marker', 10)
+        
+        ##################################################################
+        ##################################################################
+        ## TODO: Section 3.3.2: Create publishers for the annotated image 
+        # and ArUco marker:
+        # 1. Annotated image (Image) publisher (self.aruco_img_pub) on topic /aruco_cube_image
+        # 2. ArUco marker (Marker) publisher (self.aruco_marker_pub) on topic /aruco_cube_marker
+        ##################################################################
+
+
+        ##################################################################
 
         # OpenCV ArUco detection setup
         # We must pick a dictionary that contains our cube's ID (80) 
@@ -54,7 +63,8 @@ class ArucoCubeDetector(Node):
         if self.latest_aruco_det is not None:
             self.get_logger().info("ArUco cube found. Canceling timer...")
             self.detection_clk.cancel()
-        self.get_logger().warning("No objects with ArUco tags have been detected.")
+        else:
+            self.get_logger().warning("No objects with ArUco tags have been detected.")
 
     def image_cb(self, msg):
         frame = self.bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
@@ -67,6 +77,12 @@ class ArucoCubeDetector(Node):
 
             # Annotate image to highlight detection
             cv2.aruco.drawDetectedMarkers(frame, corners, ids)
+            for c in corners:
+                pts = c.reshape((4, 2)).astype(int)
+                for i in range(4):
+                    pt1 = tuple(pts[i])
+                    pt2 = tuple(pts[(i + 1) % 4])
+                    cv2.line(frame, pt1, pt2, (0, 255, 0), thickness=4)
 
             # Fill ArUco Marker to publish:
             # make the pose empty for now; we tackle this in a different unit!
@@ -81,9 +97,9 @@ class ArucoCubeDetector(Node):
             box = corners[0].reshape(4, 2)  # remove extra dim to get actual ArUco box
             centroid = np.mean(box,axis=0) # center px is mean across rows
 
-            self.latest_aruco_det.pixel_x = float(centroid[0] )# px coords must be float
+            self.latest_aruco_det.pixel_x = float(centroid[0]) # px coords must be float
             self.latest_aruco_det.pixel_y = float(centroid[1]) # for Marker message; 
-                                                        # int o.w.
+                                                               # int o.w.
             # Annotate image
             cv2.circle(img=frame, 
                         center=(int(self.latest_aruco_det.pixel_x), int(self.latest_aruco_det.pixel_y)), 
@@ -91,14 +107,29 @@ class ArucoCubeDetector(Node):
                         radius=2, 
                         thickness=-1 
                     )
-            # Publish annotated image
-            out_msg = self.bridge.cv2_to_imgmsg(frame, encoding='bgr8')
-            self.aruco_img_pub.publish(out_msg)
+            
+            ###################################################################
+            # # Publish annotated image
+            ###################################################################
+            ## TODO: Section 3.3.2: Cast frame to Image message and publish
+            ###################################################################
 
-            # Publish ArUco marker
-            self.aruco_marker_pub.publish(self.latest_aruco_det)
 
-        cv2.imshow("Aruco Cube", frame)
+            ###################################################################
+
+
+
+            
+            ###################################################################
+            ## # Publish ArUco marker
+            ###################################################################
+            ## TODO: Section 3.3.2: Publish the AruCo Marker message, latest_aruco_det
+            ###################################################################
+
+
+            ###################################################################
+
+        cv2.imshow("Detected ArUco Cube", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             rclpy.shutdown()
 

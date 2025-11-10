@@ -14,3 +14,14 @@
 **/slides
 
 **/docs
+src/simple_image_annotator/simple_image_annotator/utils/depth_outputs.txt
+src/simple_image_annotator/simple_image_annotator/utils/metrics.py
+src/simple_image_annotator/simple_image_annotator/utils/out.csv
+src/aruco_pose_estimation/aruco_pose_estimation/detect_aruco_full.py
+src/aruco_pose_estimation/aruco_pose_estimation/detect_aruco_ques.py
+src/simple_image_annotator/simple_image_annotator/image_annotator_full.py
+src/simple_image_annotator/simple_image_annotator/image_annotator_ques.py
+src/simple_image_annotator/simple_image_annotator/image_annotator_qa.py
+src/aruco_pose_estimation/aruco_pose_estimation/estimate_aruco_pose_full.py
+src/tf/tf2_echo.txt
+src/aruco_arm_commander

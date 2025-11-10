@@ -21,75 +21,98 @@ Utilities for annotating and manipulating OpenCV images
 import numpy as np
 import cv2
 
+def sample_pixels(pixel_coords, step, bytes_per_pixel, img_data):
+    """
+    Return raw bytes for a list of arbitrary pixel coordinates.
+
+    Args:
+        pixel_coords (list of tuples): [(row, col), ...] of pixel indices.
+        s: bytes per pixel
+        n: # column index 
+        m: row index
+    """
+    s = bytes_per_pixel
+
+    sampled_pixels = []
+    for m, n in pixel_coords:
+        offset = (m * step) + (n * s)
+        pixel_bytes = img_data[offset : offset + s]
+        sampled_pixels.append(pixel_bytes)
+
+    return sampled_pixels
+
+def check_px_count(px_count, img_width):
+    if px_count < 0 or px_count >= img_width:
+        raise ValueError("Invalid pixel count.")
+
+def simple_annot(full_color_image, roi, color_box_center_px):
+    # draw rectangle using top-left and bottom-right corners
+    top_left = (int(np.min(roi[:,0])), int(np.min(roi[:,1])))
+    bottom_right = (int(np.max(roi[:,0])), int(np.max(roi[:,1])))
+    cv2.rectangle(full_color_image, top_left, bottom_right, color=(0,255,0), thickness=2)
+
+    # mark center pixel with a circle
+    center = color_box_center_px
+    center_pt = (int(center[0]), int(center[1]))
+    cv2.circle(full_color_image, center_pt, radius=4, color=(0,0,255), thickness=-1)
+
 def img_annotation_helper(
         max_box_depth: float, 
         center_box_depth: float,
-        box_coords, 
+        roi: np.ndarray,
         full_color_image) -> None:
     """
-    Adds depth annotation to a given image
+    Adds depth annotation to a given color image
     """
     text = f"Max Depth: {max_box_depth:.2f} m"
     center_text = f"Center Depth: {center_box_depth:.2f} m"
-    # Get box coordinates
-    x_coords = box_coords[:, 0]
-    y_coords = box_coords[:, 1]
-    l = int(np.min(x_coords))
-    r = int(np.max(x_coords))
-    t = int(np.min(y_coords))
-    b = int(np.max(y_coords))
 
-    # Draw rectangle on full image
-    cv2.rectangle(full_color_image, (l, t), (r, b), (0, 0, 0), 2)
+    # Get ROI bounds
+    x_coords = roi[:, 0]
+    y_coords = roi[:, 1]
+    l, r = int(np.min(x_coords)), int(np.max(x_coords))
+    t, b = int(np.min(y_coords)), int(np.max(y_coords))
 
-    # Put text just above the rectangle
-    text_pos = (l, t - 10 if t - 10 > 10 else t + 20)
-    
-    # Draw filled transparent rectangle
+    # Make overlay to draw on
     overlay = full_color_image.copy()
-    alpha = 0.3  # Transparency factor
-
-    # Rectangle coordinates
-    # Draw transparent background for max depth text
-    (text_w, text_h), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_COMPLEX, 0.7, 2)
-    text_bg_overlay = full_color_image.copy()
-    text_bg_alpha = 0.5
-    text_bg_rect = (text_pos[0], text_pos[1] - text_h, text_w, text_h + 8)
-    cv2.rectangle(text_bg_overlay, 
-                    (text_bg_rect[0], text_bg_rect[1]), 
-                    (text_bg_rect[0] + text_bg_rect[2], text_bg_rect[1] + text_bg_rect[3]), 
-                    (255, 255, 255), -1)
-    cv2.addWeighted(text_bg_overlay, text_bg_alpha, overlay, 1 - text_bg_alpha, 0, overlay)
-
-    # Draw transparent background for center depth text
-    (center_text_w, center_text_h), _ = cv2.getTextSize(center_text, cv2.FONT_HERSHEY_COMPLEX, 0.7, 2)
-    center_text_pos = (l, b + 20)
-    center_bg_overlay = overlay.copy()
-    center_bg_alpha = 0.5
-    center_bg_rect = (center_text_pos[0], center_text_pos[1] - center_text_h, center_text_w, center_text_h + 8)
-    cv2.rectangle(center_bg_overlay, 
-                    (center_bg_rect[0], center_bg_rect[1]), 
-                    (center_bg_rect[0] + center_bg_rect[2], center_bg_rect[1] + center_bg_rect[3]), 
-                    (255, 255, 255), -1)
-    cv2.addWeighted(center_bg_overlay, center_bg_alpha, overlay, 1 - center_bg_alpha, 0, overlay)
-
-    # Draw rectangle border
-    cv2.rectangle(overlay, (l, t), (r, b), (0, 0, 0), 2)
-
-    # Put text just above the rectangle
-    cv2.putText(overlay, text, text_pos, cv2.FONT_HERSHEY_COMPLEX,
-                0.7, (0, 0, 0), 2, cv2.LINE_AA)
-    cv2.putText(overlay, center_text, center_text_pos, cv2.FONT_HERSHEY_COMPLEX,
-                0.7, (0, 0, 255), 2, cv2.LINE_AA)
-    print(f"Max Depth: {max_box_depth:.2f} m, Center Depth: {center_box_depth:.2f} m")
     
+    # Draw green bounding box
+    cv2.rectangle(overlay, (l, t), (r, b), (0, 255, 0), 2)
+
+    # Draw filled background for max depth text
+    (text_w, text_h), _ = cv2.getTextSize(text, cv2.FONT_HERSHEY_COMPLEX, 0.7, 2)
+    text_bg_rect = (l, max(t - text_h - 5, 0), text_w, text_h + 5)
+    cv2.rectangle(overlay, (text_bg_rect[0], text_bg_rect[1]),
+                  (text_bg_rect[0] + text_bg_rect[2], text_bg_rect[1] + text_bg_rect[3]),
+                  (255, 255, 255), -1)
+
+    # Draw filled background for center depth text
+    (center_text_w, center_text_h), _ = cv2.getTextSize(center_text, cv2.FONT_HERSHEY_COMPLEX, 0.7, 2)
+    center_text_pos = (l, b + center_text_h + 5)
+    cv2.rectangle(overlay, (center_text_pos[0], b + 5),
+                  (center_text_pos[0] + center_text_w, b + 5 + center_text_h + 5),
+                  (255, 255, 255), -1)
+
+    # Draw text
+    cv2.putText(overlay, text, (l, t - 5), cv2.FONT_HERSHEY_COMPLEX, lineType=cv2.LINE_AA, fontScale=0.7, color=(0, 0, 0), thickness=2)
+    cv2.putText(overlay, center_text, (l, b + center_text_h + 5), cv2.FONT_HERSHEY_COMPLEX, lineType=cv2.LINE_AA, fontScale=0.7, color=(0, 0, 255), thickness=2)
+
+    # Draw center point as a small red circle
+    cx, cy = np.mean(roi, axis=0).astype(int)
+    cv2.circle(overlay, (cx, cy), radius=4, color=(0, 0, 255), thickness=-1)
+
+    # Copy overlay back to the original image
+    full_color_image[:] = overlay
+    print(f"Center Depth: {center_box_depth:.2f} m, Max Depth: {max_box_depth:.2f} m, "
+          f"Center Pixel: {(cy, cx)}")
+
             
 def crop_box(image, box_coords):
     # Get bounding rectangle from box
     x_coords = box_coords[:, 0]
     y_coords = box_coords[:, 1]
 
-    # Get corners using x and y coords (Your code here)
+    # Get corners using x and y coords 
     l = int(np.min(x_coords))
     r = int(np.max(x_coords))
     t = int(np.min(y_coords))

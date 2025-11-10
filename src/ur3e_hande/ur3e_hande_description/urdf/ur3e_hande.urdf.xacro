@@ -66,11 +66,11 @@
       </plugin>
   </gazebo>
 
-  <gazebo reference="dummy_camera_link">
+  <gazebo reference="camera_optical_link">
       <sensor name="camera" type="rgbd_camera">
         <frame_id>camera_depth_optical_frame</frame_id>
         <camera>
-         <optical_frame_id>dummy_camera_link</optical_frame_id> <!-- Previously: camera_color_optical_frame -->
+         <optical_frame_id>camera_optical_link</optical_frame_id> <!-- Previously: camera_color_optical_frame -->
           <horizontal_fov>1.5707963267948966</horizontal_fov>
           <image>
             <width>1280</width>

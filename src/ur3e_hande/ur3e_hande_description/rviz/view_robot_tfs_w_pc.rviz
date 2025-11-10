@@ -110,7 +110,7 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-        dummy_camera_link:
+        camera_optical_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
