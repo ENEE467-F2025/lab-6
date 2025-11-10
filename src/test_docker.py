@@ -51,7 +51,7 @@ class TestDockerNode(Node):
                 self.get_logger().error(f"Package '{pkg}' not found in lab 6 workspace at {share_dir}. Docker setup may be incorrect.")
                 return
 
-        self.get_logger().info("\x1b[92mAll packages for Lab 6. Docker setup is correct.\x1b[0m")
+        self.get_logger().info("\x1b[92mAll packages for Lab 6 found. Docker setup is correct.\x1b[0m")
         self.docker_timer.cancel()
 
         # emulate Ctrl-C by shutting down rclpy, causing rclpy.spin() to exit
