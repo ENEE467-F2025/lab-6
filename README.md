@@ -7,8 +7,7 @@ This repository contains a Docker container for Lab 6 (Visual Robot Perception i
 
 ![ROS 2 Jazzy](https://img.shields.io/badge/ROS2-Jazzy-orange)
 
-Motivation.
-
+Visual robot perception is often touted as the bedrock of modern robotics and refers to the process through which a robot acquires, interprets, and makes sense of its environment using cameras and other image sensors. Such scene understanding might involve capturing images, depth data, or point clouds and processing them to extract task-specific features such as the type, geometry, and pose of one or more objects in the robot's workspace. Thus, this lab seeks to impart fundamental skills for developing performant robot perception programs that enable intelligent robotic manipulation.
 ## Lab Software
 
 To avoid software conflicts and increase portability, all lab software will be packaged as a Docker container. Follow the instructions below to get started.
