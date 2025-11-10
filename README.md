@@ -1,7 +1,7 @@
 # ENEE 467 Fall 2025: Robotics Project Laboratory
 ## Lab 6: Visual Robot Perception in ROS 2
 
-This repository contains a Docker container for Lab 6 (Visual Robot Perception in ROS2) as well as the necessary code templates for completing the exercises. Software for both parts is provided in this repo; the manuals will specify which packages to run for which labs.
+This repository contains a Docker container for Lab 6 (Visual Robot Perception in ROS2) as well as the necessary code templates for completing the exercises. 
 
 ## Overview
 
