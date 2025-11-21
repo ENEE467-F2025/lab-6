@@ -72,8 +72,18 @@ RUN apt-get update && apt-get install -y \
     ros-jazzy-gz-ros2-control \
     ros-jazzy-foxglove-bridge \
     ros-jazzy-joint-state-publisher-gui \
-    ros-jazzy-moveit* \
-    ros-jazzy-ur-* \
+    ros-jazzy-moveit \
+    ros-jazzy-moveit-common \
+    ros-jazzy-moveit-ros-planning \
+    ros-jazzy-moveit-ros-move-group \
+    ros-jazzy-moveit-ros-control-interface \
+    ros-jazzy-ur-description \
+    ros-jazzy-ur-moveit-config \
+    ros-jazzy-ur-robot-driver \
+    ros-jazzy-ur-calibration \
+    ros-jazzy-realsense2-camera \
+    ros-jazzy-realsense2-camera-msgs \
+    ros-jazzy-realsense2-description \
     ros-jazzy-aruco-markers-msgs* \
     ros-jazzy-cv-bridge \
     ros-jazzy-realsense2* \
