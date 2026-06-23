@@ -27,14 +27,12 @@ import pathlib, os
 from rclpy.node import Node
 from ament_index_python import get_package_share_directory
 
-# Lab 6 packages
+# Lab 6 Part 2 (Hardware) packages
 lab6_packages = [
-    "aruco_pose_estimation",
-    "aruco_interfaces",
-    "simple_image_annotator",
-    "robotiq_hande_description",
-    "ur3e_hande_description",
-    "ur3e_hande_gz"
+    "ur3e_hande_perception",
+    "ur3e_hande_planning_interfaces",
+    "ur3e_hande_moveit_py",
+    "pymoveit2"
 ]
 lab6_pkg_share_dirs = [get_package_share_directory(pkg) for pkg in lab6_packages]
 

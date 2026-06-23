@@ -1,13 +1,13 @@
-# ENEE 467 Fall 2025: Robotics Project Laboratory
-## Lab 6: Visual Robot Perception in ROS 2
+# ENEE 467 Fall 2026: Robotics Project Laboratory
+## Lab 6 - Part 2 (Hardware): Visual Robot Perception in ROS 2
 
-This repository contains a Docker container for Lab 6 (Visual Robot Perception in ROS2) as well as the necessary code templates for completing the exercises. 
+This repository contains a Docker container for Lab 6 - Part 2 (Hardware) as well as the necessary code templates for completing the exercises.
 
 ## Overview
 
 ![ROS 2 Jazzy](https://img.shields.io/badge/ROS2-Jazzy-orange)
 
-Visual robot perception is often touted as the bedrock of modern robotics and refers to the process through which a robot acquires, interprets, and makes sense of its environment using cameras and other image sensors. Such scene understanding might involve capturing images, depth data, or point clouds and processing them to extract task-specific features such as the type, geometry, and pose of one or more objects in the robot's workspace. Thus, this lab seeks to impart fundamental skills for developing performant robot perception programs that enable intelligent robotic manipulation.
+This part moves perception from the simulated 2D pipeline of Part 1 onto the real robot. Working with the Intel RealSense D435i RGB-D camera, you will build a 3D point-cloud perception pipeline that detects an object on a tabletop and serves its pose, then command the UR3e arm to move its tool to that pose. The Hand-E gripper is not used in this part; the arm moves to the detected pose but does not grasp. Along the way you will acquire a live point cloud, downsample and crop it with a voxel-grid filter, segment the tabletop plane with RANSAC, cluster objects with DBSCAN, serve a detected object's pose through a ROS 2 action, and move the UR3e arm tool to that pose with MoveIt (arm only).
 ## Lab Software
 
 To avoid software conflicts and increase portability, all lab software will be packaged as a Docker container. Follow the instructions below to get started.
@@ -81,7 +81,7 @@ The command will launch VSCode on your host and automatically attach it to the r
 
 ## Lab Instructions
 
-Please follow the [lab manual](Lab_6_Visual_Perception_in_ROS2.pdf) closely. All instructions are contained inside the lab manual.
+Please follow the [lab manual](Lab_6_Visual_Robot_Perception_in_ROS_2-Part-2.pdf) closely. All instructions are contained inside the lab manual.
 
 ## MacOS Instructions
 
