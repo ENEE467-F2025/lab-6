@@ -51,7 +51,7 @@ The lab computers contain a prebuild image so you will not have to build the ima
     ```
 * Once inside the container, you should be greeted with the following prompt indicating that the container is running
     ```
-    (lab-6) robot@docker-desktop:~$
+    (lab-6) robot@<user_name>:~$
     ```
 * Edit the lab-6 Python (ROS 2) code  within the `lab-6/src` folder from a VS Code editor on the host machine. The repo directory `lab-6/src`  is mounted to the Docker container located at `/home/robot/ros2_ws/src` so all changes will be reflected **inside** the container.
 
